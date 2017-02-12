@@ -27,6 +27,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
     String name;
     String desp;
     String key;
+    String date;
+    String hour;
     Location mLastLocation;
     GoogleMap map;
     ServerAPI server;
@@ -44,8 +46,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         coords = intent.getDoubleArrayExtra("coords");
         key = intent.getStringExtra("key");
         System.out.println("key: "+key);
-        String date = intent.getStringExtra("date");
-        String hour = intent.getStringExtra("hour");
+        date = intent.getStringExtra("date");
+        hour = intent.getStringExtra("hour");
         server = new ServerAPI(this,false);
         parser = new Parser(this);
         System.out.println("coords: "+coords);
@@ -96,7 +98,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    parser.addEvent(name,key);
+                    //parser.addEvent(name,key);
+                    parser.addEvent(name,date,hour,desp,key);
                 }
             });
         }else{

@@ -106,6 +106,26 @@ public class Parser {
         }
     }
 
+    public void addEvent(String name, String date, String hours,String desp, String key){
+        JSONObject old = readUserJSON();
+        JSONObject eventToAdd = new JSONObject();
+        if(isInFile(key)){return;}
+        try {
+            eventToAdd.put("name", name);
+            eventToAdd.put("date", date);
+            eventToAdd.put("hours", hours);
+            eventToAdd.put("desp", desp);
+            eventToAdd.put("key", key);
+            ((JSONArray) old.get("events")).put(eventToAdd);
+            //old.put("event",eventToAdd);
+            System.out.println("inAdd: "+old.toString());
+            writeJSON(old);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public boolean isInFile(String key){
         JSONObject obj = readUserJSON();
         try {

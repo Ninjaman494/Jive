@@ -10,6 +10,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -40,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         /*parser.createUserFile();
         parser.readUserFile();*/
         createTabs(viewPager);
-
     }
 
     public String requestKey(String name){
@@ -59,26 +61,39 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> dates = server.getDates();
         ArrayList<String> hours = server.getHours();
         ArrayList<String> desps = server.getDesps();
+        Skeys = parser.getKeys();
         ArrayList<ArrayList<String>> allEvents = new ArrayList<>();
         System.out.println("size beofre:"+names.size());
-        allEvents.add(names);allEvents.add(dates);allEvents.add(hours);allEvents.add(desps);
+        allEvents.add(names);allEvents.add(dates);allEvents.add(hours);allEvents.add(desps);allEvents.add(Skeys);
         System.out.println("size after:"+names.size());
 
-        Skeys = parser.getKeys();
-        System.out.println("Skeys:"+Skeys.toString());
+
+        ArrayList<String> names2 = new ArrayList<>();
+        ArrayList<String> dates2 = new ArrayList<>();
+        ArrayList<String> hours2 = new ArrayList<>();
+        ArrayList<String> desps2 = new ArrayList<>();
         //Attending
-        ArrayList<String> names2 = server.getNamesSubset(Skeys);
-        ArrayList<String> dates2 = server.getNamesSubset(Skeys);
-        ArrayList<String> hours2 = server.getNamesSubset(Skeys);
-        ArrayList<String> desps2 = server.getNamesSubset(Skeys);
-        System.out.println("subset:"+names2.toString());
+        JSONObject obj = parser.readUserJSON();
+        try {
+            JSONArray root = (JSONArray)obj.get("events");
+            for (int i = 0; i < root.length(); i++) {
+                    JSONObject event = (JSONObject)root.get(i);
+                    names2.add(event.get("name").toString());
+                    dates2.add(event.get("date").toString());
+                    hours2.add(event.get("hours").toString());
+                    desps2.add(event.get("desp").toString());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         ArrayList<ArrayList<String>> attending = new ArrayList<>();
         attending.add(names2);attending.add(dates2);attending.add(hours2);attending.add(desps2);
 
+        System.out.println("subset:"+names2.toString());
         HashMap<String,ArrayList<ArrayList<String>>> map = new HashMap<>();
 
 
-        map.put("Attending",allEvents);
+        map.put("Attending",attending);
         map.put("All Events",allEvents);
         map.put("Your Events",allEvents);
 

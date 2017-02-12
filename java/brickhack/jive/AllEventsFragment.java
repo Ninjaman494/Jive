@@ -32,7 +32,6 @@ public class AllEventsFragment extends Fragment {
     private ArrayList<String> hours;
     private ArrayList<String> desps;
 
-
     public AllEventsFragment() {
         // Required empty public constructor
     }
@@ -66,8 +65,6 @@ public class AllEventsFragment extends Fragment {
             dates = getArguments().getStringArrayList(ARG_PARAM2);
             hours = getArguments().getStringArrayList(ARG_PARAM3);
             desps = getArguments().getStringArrayList(ARG_PARAM4);
-
-            System.out.println("onCreate: "+names.size());
         }
     }
 
