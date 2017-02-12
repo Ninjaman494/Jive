@@ -45,6 +45,10 @@ public class BottomBarFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    /*
+    public void setArguements(boolean isSigned){
+
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

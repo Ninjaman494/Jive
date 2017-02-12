@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,12 +13,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,6 +30,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
     Location mLastLocation;
     GoogleMap map;
     ServerAPI server;
+    Parser parser;
     double[] coords;
 
 
@@ -46,9 +43,11 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         desp = intent.getStringExtra("desp");
         coords = intent.getDoubleArrayExtra("coords");
         key = intent.getStringExtra("key");
+        System.out.println("key: "+key);
         String date = intent.getStringExtra("date");
         String hour = intent.getStringExtra("hour");
         server = new ServerAPI(this,false);
+        parser = new Parser(this);
         System.out.println("coords: "+coords);
 
 
@@ -62,6 +61,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         dateView.setText(date);
         hourView.setText(hour);
         despView.setText(desp);
+        setupBottomBar();
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -82,6 +82,36 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         if(true) {
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
+        }
+    }
+
+    private void setupBottomBar(){
+        if(!parser.isInFile(key)){
+            FragmentManager fm = getSupportFragmentManager();
+            BottomBarFragment bottomBarFragment = (BottomBarFragment)fm.findFragmentById(R.id.bottom_bar);
+            TextView tv = (TextView)bottomBarFragment.getView().findViewById(R.id.status_text);
+            tv.setText(R.string.not_signed);
+            Button btn = (Button)bottomBarFragment.getView().findViewById(R.id.status_button);
+            btn.setText(R.string.not_singed_button);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    parser.addEvent(name,key);
+                }
+            });
+        }else{
+            FragmentManager fm = getSupportFragmentManager();
+            BottomBarFragment bottomBarFragment = (BottomBarFragment)fm.findFragmentById(R.id.bottom_bar);
+            TextView tv = (TextView)bottomBarFragment.getView().findViewById(R.id.status_text);
+            tv.setText(R.string.signed);
+            Button btn = (Button)bottomBarFragment.getView().findViewById(R.id.status_button);
+            btn.setText(R.string.signed_button);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    parser.removeEvent(key);
+                }
+            });
         }
     }
 

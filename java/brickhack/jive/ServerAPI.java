@@ -29,12 +29,12 @@ import java.util.Date;
 public class ServerAPI {
     Context mContext;
     ArrayList<JSONObject> events;
-    ArrayList<String> names = new ArrayList<>();
-    ArrayList<String> dates = new ArrayList<>();
-    ArrayList<String> hours = new ArrayList<>();
-    ArrayList<String> desps = new ArrayList<>();
-    ArrayList<double[]> coords = new ArrayList<>();
-    private ArrayList<String> keys = new ArrayList<>();
+    static ArrayList<String> names = new ArrayList<>();
+    static ArrayList<String> dates = new ArrayList<>();
+    static ArrayList<String> hours = new ArrayList<>();
+    static ArrayList<String> desps = new ArrayList<>();
+    static ArrayList<double[]> coords = new ArrayList<>();
+     ArrayList<String> keys = new ArrayList<>();
 
     private final String eventUrl = "https://jive2.herokuapp.com/events";
     private final String locUrl = "https://jive2.herokuapp.com/colleges/";
@@ -57,10 +57,12 @@ public class ServerAPI {
                     public void onResponse(JSONArray response) {
 
                         try {
+                            System.out.println("before refresh:"+names.size());
                             for(int i =0;i<response.length();i++){
                                 JSONObject obj = (JSONObject)response.get(i);
                                 //System.out.println("obj: "+events.get(i).toString());
                                 names.add(obj.get("name").toString());
+                                System.out.println("size for "+i+" iteration: "+names.size());
                                 dates.add(parseDate(obj.get("start_time").toString()));
                                 hours.add(parseHours(obj.get("start_time").toString(),obj.get("end_time").toString()));
                                 desps.add(obj.get("description").toString());
@@ -73,6 +75,7 @@ public class ServerAPI {
                                 coords.add(d);
 
                             }
+                            System.out.println("after loop: "+names.size());
                         }
                         catch (Exception e){
                             e.printStackTrace();
@@ -93,7 +96,57 @@ public class ServerAPI {
         return coords.get(index);
     }
 
+    public ArrayList<String> getNamesSubset(ArrayList<String> keys){
+        ArrayList<String> subset = new ArrayList<>();
+        System.out.println("Name size:"+names.toString());
+        if(names.size()!=0) {
+            for (String s : keys) {
+                int index = this.keys.indexOf(s);
+                String dateToAdd = names.get(index);
+                subset.add(dateToAdd);
+            }
+        }
+        return subset;
+    }
+
+    public ArrayList<String> getDatesSubset(ArrayList<String> keys){
+        ArrayList<String> subset = new ArrayList<>();
+        if(dates.size()!=0) {
+            for (String s : keys) {
+                int index = this.keys.indexOf(s);
+                String dateToAdd = dates.get(index);
+                subset.add(dateToAdd);
+            }
+        }
+        return subset;
+    }
+
+    public ArrayList<String> getHoursSubset(ArrayList<String> keys){
+        ArrayList<String> subset = new ArrayList<>();
+        if(hours.size()!=0) {
+            for (String s : keys) {
+                int index = this.keys.indexOf(s);
+                String dateToAdd = hours.get(index);
+                subset.add(dateToAdd);
+            }
+        }
+        return subset;
+    }
+
+    public ArrayList<String> getDespsSubset(ArrayList<String> keys){
+        ArrayList<String> subset = new ArrayList<>();
+        if(desps.size()!=0) {
+            for (String s : keys) {
+                int index = this.keys.indexOf(s);
+                String dateToAdd = desps.get(index);
+                subset.add(dateToAdd);
+            }
+        }
+        return subset;
+    }
+
     public ArrayList<String> getNames(){
+        System.out.println("getNames: "+names.size());
         return names;
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Xml;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -18,6 +19,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by akash on 2/11/2017.
@@ -42,7 +45,6 @@ public class Parser {
             JSONObject root = new JSONObject();
             JSONArray arr = new JSONArray();
             root.put("events",(Object)arr);
-            System.out.println("What's being written: "+root.toString());
             fw.write(root.toString());
             fw.flush();
             fw.close();
@@ -88,108 +90,68 @@ public class Parser {
         }
     }
 
-    private String readFromFile() {
-        try {
-            String fileName = this.fileName;
-            FileInputStream fis = mContext.openFileInput(fileName);
-
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader streamReader = new BufferedReader(isr);
-
-            StringBuilder responseStrBuilder = new StringBuilder();
-
-            String inputStr;
-            while ((inputStr = streamReader.readLine()) != null) {
-                System.out.println("APPENDING");
-                responseStrBuilder.append(inputStr);
-            }
-            //JSONObject jsonobj = new JSONObject(responseStrBuilder.toString());
-            streamReader.close();
-            isr.close();
-            fis.close();
-            return responseStrBuilder.toString();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public void createUserFile(){
-        XmlSerializer xmlSerializer = Xml.newSerializer();
-        StringWriter writer = new StringWriter();
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            xmlSerializer.setOutput(writer);
-            //Start Document
-            xmlSerializer.startDocument("UTF-8", true);
-            //Start Root Tag
-            xmlSerializer.startTag("","Records");
-
-            //createExampleData(xmlSerializer);
-
-            //Close Root Tag
-            xmlSerializer.endTag("","Records");
-            //End DOCUMENT
-            xmlSerializer.endDocument();
-
-            fileOutputStream.write(writer.toString().getBytes());
-            fileOutputStream.close();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void readUserFile(){
-        if(file!=null){
-            try {
-                XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
-                XmlPullParser myparser = xmlFactoryObject.newPullParser();
-                InputStream stream = new FileInputStream(file);
-                myparser.setInput(stream, null);
-
-                int event = myparser.getEventType();
-                while (event != XmlPullParser.END_DOCUMENT)  {
-                    String name = myparser.getName();
-                    switch (event){
-                        case XmlPullParser.START_TAG:
-                            break;
-
-                        case XmlPullParser.END_TAG:
-                            System.out.println(name+": "+myparser.getAttributeValue(null,"name")+" id:"+myparser.getAttributeValue(null,"id"));
-                            break;
-                    }
-                    event = myparser.next();
-                }
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public boolean addEvent(String name, String key){
+    public void addEvent(String name, String key){
         JSONObject old = readUserJSON();
         JSONObject eventToAdd = new JSONObject();
         try {
             eventToAdd.put("name", name);
             eventToAdd.put("key", key);
-            old.put("event",eventToAdd);
+            ((JSONArray) old.get("events")).put(eventToAdd);
+            //old.put("event",eventToAdd);
             System.out.println("inAdd: "+old.toString());
             writeJSON(old);
 
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
 
+    public boolean isInFile(String key){
+        JSONObject obj = readUserJSON();
+        try {
+            JSONArray root = obj.getJSONArray("events");
+            for(int i=0;i<root.length();i++){
+                JSONObject event = (JSONObject)root.get(i);
+                if(event.get("key").toString().equals(key)){
+                    return true;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return false;
     }
 
+    public void removeEvent(String key){
+        JSONObject old = readUserJSON();
+        try {
+            JSONArray root = old.getJSONArray("events");
+            for(int i=0;i<root.length();i++){
+                JSONObject event = (JSONObject)root.get(i);
+                if(event.get("key").toString().equals(key)){
+                    root.remove(i);
+                    break;
+                }
+            }
+            writeJSON(old);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
-
-    public boolean removeEvent(){
-        return false;
+    public ArrayList<String> getKeys(){
+        ArrayList<String> keys = new ArrayList<>();
+        JSONObject obj = readUserJSON();
+        try {
+            JSONArray root = (JSONArray) obj.get("events");
+            for(int i=0;i<root.length();i++){
+                JSONObject event = (JSONObject)root.get(i);
+                keys.add(event.get("key").toString());
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return keys;
     }
 
     private void createExampleData(XmlSerializer xmlSerializer){

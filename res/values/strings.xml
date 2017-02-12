@@ -4,6 +4,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="not_signed">Sign Up</string>
+    <string name="not_singed_button">Confirm</string>
+    <string name="signed">Signed Up</string>
+    <string name="signed_button">Cancel</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
