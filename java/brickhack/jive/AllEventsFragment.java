@@ -21,16 +21,13 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class AllEventsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "EVENTS";
+    private static final String ARG_PARAM2 = "DATES";
+    private static final String ARG_PARAM3 = "HOURS";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private ArrayList<String> names;
-    private ArrayList<String> descriptions;
+    private ArrayList<String> dates;
     private ArrayList<String> hours;
 
 
@@ -42,16 +39,17 @@ public class AllEventsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param names Parameter 1.
+     * @param dates Parameter 2.
      * @return A new instance of fragment AllEventsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AllEventsFragment newInstance(String param1, String param2) {
+    public static AllEventsFragment newInstance(ArrayList names,ArrayList dates,ArrayList hours) {
         AllEventsFragment fragment = new AllEventsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putStringArrayList(ARG_PARAM1, names);
+        args.putStringArrayList(ARG_PARAM2, dates);
+        args.putStringArrayList(ARG_PARAM3, hours);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,8 +58,9 @@ public class AllEventsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            names = getArguments().getStringArrayList(ARG_PARAM1);
+            dates = getArguments().getStringArrayList(ARG_PARAM2);
+            hours = getArguments().getStringArrayList(ARG_PARAM3);
         }
     }
 
@@ -69,12 +68,12 @@ public class AllEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_events, container, false);
-        names = getNames();
-        descriptions = getDates();
-        hours = getHours();
+        /*names = getNames();
+        dates = getDates();
+        hours = getHours();*/
 
         ListView eventsList = (ListView)view.findViewById(R.id.events_list);
-        eventsList.setAdapter(new VocabAdapter(names,descriptions,hours,inflater,R.layout.event_item));
+        eventsList.setAdapter(new VocabAdapter(names, dates,hours,inflater,R.layout.event_item));
         eventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -83,6 +82,11 @@ public class AllEventsFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(),EventDetailsActivity.class);
                 intent.putExtra("name",name.getText());
+                String key = ((MainActivity) getActivity()).requestKey(name.getText().toString());
+                intent.putExtra("key",key);
+
+                double[] coords = ((MainActivity) getActivity()).requestCoords(key);
+                intent.putExtra("coords",coords);
                 startActivity(intent);
 
             }

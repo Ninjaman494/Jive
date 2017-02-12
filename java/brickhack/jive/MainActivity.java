@@ -19,65 +19,60 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     Parser parser;
+    ServerAPI server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        createTabs(viewPager);
+
         parser = new Parser(this);
+        server = new ServerAPI(this);
+        /*parser.createUserFile();
+        parser.readUserFile();*/
+        //parser.addEvent("BrickHack","1");
+        createTabs(viewPager);
 
-        parser.createUserFile();
-        parser.readUserFile();
+    }
 
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://www.google.com";
+    public String requestKey(String name){
+        return server.getKey(name);
+    }
 
-        /*// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        System.out.println("Response is: "+ response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println("Oh you done fucked up now");
-            }
-        });
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);*/
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        System.out.println("Response:"+response.toString().substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println("Someone loathes you bitch");
-                    }
-                });
-        queue.add(jsObjRequest);
+    public double[] requestCoords(String key){
+        return server.getCoords(key);
     }
 
     private void createTabs(final ViewPager viewPager) {
         ActionBar actionBar = getSupportActionBar();
-        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
+
+
+        ArrayList<String> names = server.getNames();
+        ArrayList<String> dates = server.getDates();
+        ArrayList<String> hours = server.getHours();
+        System.out.println("lenghts: "+names.size()+" "+dates.size());
+        HashMap<String,ArrayList<ArrayList<String>>> map = new HashMap<>();
+
+        ArrayList<ArrayList<String>> lists = new ArrayList<>();
+        lists.add(names);lists.add(dates);lists.add(hours);
+        map.put("Attending",lists);
+        map.put("All Events",lists);
+        map.put("Your Events",lists);
+
+
+        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(),map));
 
         // Specify that tabs should be displayed in the action bar.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -116,15 +111,19 @@ public class MainActivity extends AppCompatActivity {
 
 class TabPagerAdapter extends FragmentStatePagerAdapter {
     private String tabTitles[] = new String[] { "Attending", "All Events", "Your Events" };
-
-    public TabPagerAdapter(FragmentManager fm) {
+    private HashMap<String,ArrayList<ArrayList<String>>> data;
+    public TabPagerAdapter(FragmentManager fm, HashMap<String,ArrayList<ArrayList<String>>> data ) {
         super(fm);
+        this.data = data;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return AllEventsFragment.newInstance(null,null);
-        /*if(position==0){
+        ArrayList<String> names = data.get(tabTitles[position]).get(0);
+        ArrayList<String> dates = data.get(tabTitles[position]).get(1);
+        ArrayList<String> hours = data.get(tabTitles[position]).get(2);
+        return AllEventsFragment.newInstance(names,dates,hours);
+       /* if(position==0){
             return lessonNotesFragment;
         }
         if(position==1) {

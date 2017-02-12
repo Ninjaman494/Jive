@@ -28,9 +28,13 @@ import java.util.ArrayList;
 
 public class EventDetailsActivity extends AppCompatActivity implements OnMapReadyCallback,LocationListener {
     String name;
+    String desp;
+    String key;
+    int lat; int lon;
     Location mLastLocation;
-    LocationManager locationManager;
     GoogleMap map;
+    ServerAPI server;
+    double[] coords;
 
 
     @Override
@@ -38,9 +42,13 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
         name = getIntent().getStringExtra("name");
-        ((TextView) findViewById(R.id.name)).setText(name);
+        desp = getIntent().getStringExtra("desp");
+        coords = getIntent().getDoubleArrayExtra("coords");
+        server = new ServerAPI(this,false);
+        System.out.println("coords: "+coords);
+        //((TextView) findViewById(R.id.name)).setText(name);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, this);
         }
@@ -49,7 +57,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         //Images - replace with database info
         if(false){
             ImagesFragment imagesFragment = ImagesFragment.newInstance(getImages());
-
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction transaction = fm.beginTransaction();
             transaction.add(R.id.frag_container,imagesFragment);
@@ -59,7 +66,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         //Map
         if(true) {
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            //mapFragment.getView().setVisibility(View.GONE);
             mapFragment.getMapAsync(this);
         }
     }
@@ -72,13 +78,12 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
                 .position(new LatLng(33, 100))
                 .title("Marker"));
 
-        if(mLastLocation!=null) {
-            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
+        System.out.println("OnMapReady: "+coords[0]+","+coords[1]);
+            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(coords[0], coords[1]));
+            CameraUpdate zoom = CameraUpdateFactory.zoomTo(25);
 
             map.moveCamera(center);
             map.animateCamera(zoom);
-        }
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
@@ -117,12 +122,11 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+        /*CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),location.getLongitude()));
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
 
         map.moveCamera(center);
-        map.animateCamera(zoom);
+        map.animateCamera(zoom);*/
     }
 
     @Override
