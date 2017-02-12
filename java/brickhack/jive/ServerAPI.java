@@ -32,6 +32,7 @@ public class ServerAPI {
     ArrayList<String> names = new ArrayList<>();
     ArrayList<String> dates = new ArrayList<>();
     ArrayList<String> hours = new ArrayList<>();
+    ArrayList<String> desps = new ArrayList<>();
     ArrayList<double[]> coords = new ArrayList<>();
     private ArrayList<String> keys = new ArrayList<>();
 
@@ -62,6 +63,7 @@ public class ServerAPI {
                                 names.add(obj.get("name").toString());
                                 dates.add(parseDate(obj.get("start_time").toString()));
                                 hours.add(parseHours(obj.get("start_time").toString(),obj.get("end_time").toString()));
+                                desps.add(obj.get("description").toString());
                                 keys.add(obj.get("id").toString());
 
                                 System.out.println("coords: "+obj.get("gps_lat")+" , "+obj.get("gps_lon"));
@@ -86,40 +88,6 @@ public class ServerAPI {
         queue.add(jsObjRequest);
     }
 
-    //ArrayList<Double> coords = new ArrayList<>();
-   /* public void getLocationData(String key){
-        RequestQueue queue = Volley.newRequestQueue(mContext);
-        JsonArrayRequest jsObjRequest = new JsonArrayRequest
-                (Request.Method.GET, locUrl+key, null, new Response.Listener<JSONArray>() {
-
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        System.out.println("onResponse");
-                        try {
-                            for(int i =0;i<response.length();i++){
-                                JSONObject obj = (JSONObject)response.get(i);
-                                Double  lat = (Double)obj.get("gps_lat");
-                                Double  lon = (Double)obj.get("gps_lon");
-                                coords.add(lat);
-                                coords.add(lon);
-                                System.out.println("loc:"+obj.toString());
-                            }
-                        }
-                        catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println(locUrl+1);
-                        System.out.println("Someone loathes you bitch");
-                    }
-                });
-        queue.add(jsObjRequest);
-    }*/
-
     public double[] getCoords(String key){
        int index = keys.indexOf(key);
         return coords.get(index);
@@ -135,6 +103,10 @@ public class ServerAPI {
 
     public ArrayList<String> getHours(){
         return hours;
+    }
+
+    public ArrayList<String> getDesps(){
+        return desps;
     }
 
     public String getKey(String name){

@@ -25,10 +25,12 @@ public class AllEventsFragment extends Fragment {
     private static final String ARG_PARAM1 = "EVENTS";
     private static final String ARG_PARAM2 = "DATES";
     private static final String ARG_PARAM3 = "HOURS";
+    private static final String ARG_PARAM4 = "DESPS";
 
     private ArrayList<String> names;
     private ArrayList<String> dates;
     private ArrayList<String> hours;
+    private ArrayList<String> desps;
 
 
     public AllEventsFragment() {
@@ -44,12 +46,13 @@ public class AllEventsFragment extends Fragment {
      * @return A new instance of fragment AllEventsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AllEventsFragment newInstance(ArrayList names,ArrayList dates,ArrayList hours) {
+    public static AllEventsFragment newInstance(ArrayList names,ArrayList dates,ArrayList hours,ArrayList desps) {
         AllEventsFragment fragment = new AllEventsFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(ARG_PARAM1, names);
         args.putStringArrayList(ARG_PARAM2, dates);
         args.putStringArrayList(ARG_PARAM3, hours);
+        args.putStringArrayList(ARG_PARAM4, desps);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,6 +64,7 @@ public class AllEventsFragment extends Fragment {
             names = getArguments().getStringArrayList(ARG_PARAM1);
             dates = getArguments().getStringArrayList(ARG_PARAM2);
             hours = getArguments().getStringArrayList(ARG_PARAM3);
+            desps = getArguments().getStringArrayList(ARG_PARAM4);
         }
     }
 
@@ -81,9 +85,12 @@ public class AllEventsFragment extends Fragment {
                 System.out.println("you clicked:"+name.getText());
 
                 Intent intent = new Intent(getActivity(),EventDetailsActivity.class);
-                intent.putExtra("name",name.getText());
+                intent.putExtra("name",names.get(i));
                 String key = ((MainActivity) getActivity()).requestKey(name.getText().toString());
                 intent.putExtra("key",key);
+                intent.putExtra("date",dates.get(i));
+                intent.putExtra("hour",hours.get(i));
+                intent.putExtra("desp",desps.get(i));
 
                 double[] coords = ((MainActivity) getActivity()).requestCoords(key);
                 intent.putExtra("coords",coords);
@@ -126,14 +133,14 @@ public class AllEventsFragment extends Fragment {
 }
 
 class VocabAdapter extends BaseAdapter {
-    ArrayList<String> names, descriptions,hours;
+    ArrayList<String> names, dates,hours;
     LayoutInflater inflater;
     int layoutResourceId;
-    public VocabAdapter(ArrayList<String> names, ArrayList<String> descriptions,ArrayList<String> hours, LayoutInflater inflater,int layoutResourceId) {
+    public VocabAdapter(ArrayList<String> names, ArrayList<String> dates,ArrayList<String> hours, LayoutInflater inflater,int layoutResourceId) {
         this.inflater = inflater;
         this.layoutResourceId = layoutResourceId;
         this.names = names;
-        this.descriptions = descriptions;
+        this.dates = dates;
         this.hours = hours;
     }
 
@@ -146,7 +153,7 @@ class VocabAdapter extends BaseAdapter {
         TextView description = (TextView) convertView.findViewById(R.id.date);
         TextView hour = (TextView)convertView.findViewById(R.id.hours);
         name.setText(names.get(position));
-        description.setText(descriptions.get(position));
+        description.setText(dates.get(position));
         hour.setText(hours.get(position));
         return convertView;
     }

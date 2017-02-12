@@ -1,6 +1,7 @@
 package brickhack.jive;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,7 +31,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
     String name;
     String desp;
     String key;
-    int lat; int lon;
     Location mLastLocation;
     GoogleMap map;
     ServerAPI server;
@@ -41,12 +41,27 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
-        name = getIntent().getStringExtra("name");
-        desp = getIntent().getStringExtra("desp");
-        coords = getIntent().getDoubleArrayExtra("coords");
+        Intent intent = getIntent();
+        name = intent.getStringExtra("name");
+        desp = intent.getStringExtra("desp");
+        coords = intent.getDoubleArrayExtra("coords");
+        key = intent.getStringExtra("key");
+        String date = intent.getStringExtra("date");
+        String hour = intent.getStringExtra("hour");
         server = new ServerAPI(this,false);
         System.out.println("coords: "+coords);
-        //((TextView) findViewById(R.id.name)).setText(name);
+
+
+        //Setting details
+        TextView nameView = (TextView)findViewById(R.id.name);
+        TextView dateView = (TextView)findViewById(R.id.date);
+        TextView hourView = (TextView)findViewById(R.id.hours);
+        TextView despView = (TextView)findViewById(R.id.desp);
+
+        nameView.setText(name);
+        dateView.setText(date);
+        hourView.setText(hour);
+        despView.setText(desp);
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -80,7 +95,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 
         System.out.println("OnMapReady: "+coords[0]+","+coords[1]);
             CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(coords[0], coords[1]));
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(25);
+            CameraUpdate zoom = CameraUpdateFactory.zoomTo(17);
 
             map.moveCamera(center);
             map.animateCamera(zoom);

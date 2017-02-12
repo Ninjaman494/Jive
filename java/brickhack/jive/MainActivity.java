@@ -62,11 +62,12 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> names = server.getNames();
         ArrayList<String> dates = server.getDates();
         ArrayList<String> hours = server.getHours();
+        ArrayList<String> desps = server.getDesps();
         System.out.println("lenghts: "+names.size()+" "+dates.size());
         HashMap<String,ArrayList<ArrayList<String>>> map = new HashMap<>();
 
         ArrayList<ArrayList<String>> lists = new ArrayList<>();
-        lists.add(names);lists.add(dates);lists.add(hours);
+        lists.add(names);lists.add(dates);lists.add(hours);lists.add(desps);
         map.put("Attending",lists);
         map.put("All Events",lists);
         map.put("Your Events",lists);
@@ -122,7 +123,8 @@ class TabPagerAdapter extends FragmentStatePagerAdapter {
         ArrayList<String> names = data.get(tabTitles[position]).get(0);
         ArrayList<String> dates = data.get(tabTitles[position]).get(1);
         ArrayList<String> hours = data.get(tabTitles[position]).get(2);
-        return AllEventsFragment.newInstance(names,dates,hours);
+        ArrayList<String> desps = data.get(tabTitles[position]).get(3);
+        return AllEventsFragment.newInstance(names,dates,hours,desps);
        /* if(position==0){
             return lessonNotesFragment;
         }
