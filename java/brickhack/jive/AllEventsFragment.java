@@ -87,13 +87,13 @@ public class AllEventsFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(),EventDetailsActivity.class);
                 intent.putExtra("name",names.get(i));
-                String key = ((MainActivity) getActivity()).requestKey(name.getText().toString());
+                String key = ((HomePageActivity) getActivity()).requestKey(name.getText().toString());
                 intent.putExtra("key",key);
                 intent.putExtra("date",dates.get(i));
                 intent.putExtra("hour",hours.get(i));
                 intent.putExtra("desp",desps.get(i));
 
-                double[] coords = ((MainActivity) getActivity()).requestCoords(key);
+                double[] coords = ((HomePageActivity) getActivity()).requestCoords(key);
                 intent.putExtra("coords",coords);
                 startActivity(intent);
 

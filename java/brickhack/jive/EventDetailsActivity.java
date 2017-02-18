@@ -99,7 +99,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
                 @Override
                 public void onClick(View view) {
                     //parser.addEvent(name,key);
-                    parser.addEvent(name,date,hour,desp,key);
+                    parser.addEvent(name,key);
                 }
             });
         }else{
@@ -123,7 +123,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         this.map = map;
         System.out.println("Hello map");
         map.addMarker(new MarkerOptions()
-                .position(new LatLng(33, 100))
+                .position(new LatLng(coords[0], coords[1]))
                 .title("Marker"));
 
         System.out.println("OnMapReady: "+coords[0]+","+coords[1]);

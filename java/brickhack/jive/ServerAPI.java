@@ -188,5 +188,5 @@ public class ServerAPI {
 }
 
 interface ServerListener{
-    public void onResult(boolean success);
+    void onResult(boolean success);
 }
