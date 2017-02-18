@@ -147,12 +147,13 @@ class VocabAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
+        TextView name,description,hour;
         if(convertView==null){
             convertView = inflater.inflate(layoutResourceId,parent,false);
         }
-        TextView name = (TextView) convertView.findViewById(R.id.name);
-        TextView description = (TextView) convertView.findViewById(R.id.date);
-        TextView hour = (TextView)convertView.findViewById(R.id.hours);
+        name = (TextView) convertView.findViewById(R.id.name);
+        description = (TextView) convertView.findViewById(R.id.date);
+        hour = (TextView)convertView.findViewById(R.id.hours);
         name.setText(names.get(position));
         description.setText(dates.get(position));
         hour.setText(hours.get(position));

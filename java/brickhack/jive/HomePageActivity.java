@@ -44,11 +44,29 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
     }
 
     public void onResult(boolean success){
-        System.out.println("you called?");
-        //createTabs(viewPager);
-        setupTabs(buildMap());
+        if(onRestart){
+            System.out.println("onRestartResult");
+            adapter.refreshData(buildMap());
+            adapter.notifyDataSetChanged();
+        }
+        else {
+            //createTabs(viewPager);
+            setupTabs(buildMap());
+            onRestart = false;
+        }
     }
 
+    boolean onRestart = false;
+    @Override
+    public void onRestart(){
+        System.out.println("onRestart");
+        onRestart = true;
+        //Refresh Events might be adding the duplicates to ServerAPI, so I commented it out, I could also clear the lists in Resfresh Events
+        server.refreshEvents();
+        //adapter.refreshData(buildMap());
+        //adapter.notifyDataSetChanged();
+        super.onRestart();
+    }
     public HashMap<String, ArrayList< ArrayList<String> >> buildMap(){
         //All Events
         ArrayList<ArrayList<String>> allEvents  = new ArrayList<>();
@@ -78,8 +96,10 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
         return map;
     }
 
+    TabPagerAdapter adapter;
     public void setupTabs(HashMap<String, ArrayList< ArrayList<String> >> map){
-        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(),map));
+        adapter = new TabPagerAdapter(getSupportFragmentManager(),map);
+        viewPager.setAdapter(adapter);
         ActionBar actionBar = getSupportActionBar();
 
         // Specify that tabs should be displayed in the action bar.
@@ -133,24 +153,12 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
 
         @Override
         public Fragment getItem(int position) {
-            ArrayList<String> names = data.get(tabTitles[position]).get(0);//data.get(0);
+            ArrayList<String> names = data.get(tabTitles[position]).get(0);
             ArrayList<String> dates = data.get(tabTitles[position]).get(1);
             ArrayList<String> hours = data.get(tabTitles[position]).get(2);
             ArrayList<String> desps = data.get(tabTitles[position]).get(3);
-
+            System.out.println("getItem: "+names.size());
             return AllEventsFragment.newInstance(names,dates,hours,desps);
-           /* System.out.println("pos: "+position);
-            if(position==0){
-
-                return AttendingEventsFragment.newInstance(names,dates,hours,desps);
-            }
-            else if(position==1) {
-                return AllEventsFragment.newInstance(names,dates,hours,desps);
-            }
-            else if(position==2){
-                return AllEventsFragment.newInstance(names,dates,hours,desps);
-            }
-            return null;*/
         }
         @Override
         public int getCount() {
@@ -161,6 +169,16 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
         public CharSequence getPageTitle(int position) {
             // Generate title based on item position
             return tabTitles[position];
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        public void refreshData(HashMap<String,ArrayList<ArrayList<String>>> data){
+            this.data = data;
+            System.out.println(data.get("Attending").get(0).get(0));
         }
     }
 }

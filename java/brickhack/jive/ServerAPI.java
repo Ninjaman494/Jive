@@ -44,6 +44,13 @@ public class ServerAPI {
     }
 
     public void refreshEvents(){
+        //Clearing lists;
+        names.clear();
+        dates.clear();
+        hours.clear();
+        desps.clear();
+        coords.clear();
+        keys.clear();
         RequestQueue queue = Volley.newRequestQueue((Context)mContext);
         JsonArrayRequest jsObjRequest = new JsonArrayRequest
                 (Request.Method.GET, eventUrl, null, new Response.Listener<JSONArray>() {
@@ -189,4 +196,5 @@ public class ServerAPI {
 
 interface ServerListener{
     void onResult(boolean success);
+
 }
