@@ -50,7 +50,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         hour = intent.getStringExtra("hour");
         //server = new ServerAPI(this;
         parser = new Parser(this);
-        System.out.println("coords: "+coords);
 
 
         //Setting details

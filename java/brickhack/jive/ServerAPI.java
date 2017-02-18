@@ -51,6 +51,7 @@ public class ServerAPI {
         desps.clear();
         coords.clear();
         keys.clear();
+        //Sending request
         RequestQueue queue = Volley.newRequestQueue((Context)mContext);
         JsonArrayRequest jsObjRequest = new JsonArrayRequest
                 (Request.Method.GET, eventUrl, null, new Response.Listener<JSONArray>() {
@@ -96,7 +97,6 @@ public class ServerAPI {
 
     public ArrayList<String> getNamesSubset(ArrayList<String> keys){
         ArrayList<String> subset = new ArrayList<>();
-        System.out.println("Name size:"+names.toString());
         if(names.size()!=0) {
             for (String s : keys) {
                 int index = this.keys.indexOf(s);
@@ -144,7 +144,6 @@ public class ServerAPI {
     }
 
     public ArrayList<String> getNames(){
-        System.out.println("getNames: "+names.size());
         return names;
     }
 
@@ -196,5 +195,4 @@ public class ServerAPI {
 
 interface ServerListener{
     void onResult(boolean success);
-
 }

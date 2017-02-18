@@ -77,9 +77,7 @@ public class AllEventsFragment extends Fragment {
         hours = getHours();*/
 
         ListView eventsList = (ListView)view.findViewById(R.id.events_list);
-        System.out.println("beforeAdapter: "+names.size());
         eventsList.setAdapter(new VocabAdapter(names, dates,hours,inflater,R.layout.event_item));
-        System.out.println("afterAdapter: "+names.size());
         eventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -99,10 +97,7 @@ public class AllEventsFragment extends Fragment {
 
             }
         });
-        System.out.println("onCreateView: "+names.size());
         return view;
-
-
     }
 
     private ArrayList<String> getNames(){
