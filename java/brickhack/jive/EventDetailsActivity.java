@@ -48,7 +48,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         System.out.println("key: "+key);
         date = intent.getStringExtra("date");
         hour = intent.getStringExtra("hour");
-        server = new ServerAPI(this,false);
+        //server = new ServerAPI(this;
         parser = new Parser(this);
         System.out.println("coords: "+coords);
 

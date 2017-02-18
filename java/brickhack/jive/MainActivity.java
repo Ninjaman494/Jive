@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ServerListener {
     ViewPager viewPager;
     Parser parser;
     ServerAPI server;
@@ -40,9 +40,76 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(5);
         parser = new Parser(this);
         server = new ServerAPI(this);
-        /*parser.createUserFile();
-        parser.readUserFile();*/
-        createTabs(viewPager);
+        server.refreshEvents();
+    }
+
+    public void onResult(boolean success){
+        System.out.println("you called?");
+        //createTabs(viewPager);
+        setupTabs(buildMap());
+    }
+
+    public HashMap<String, ArrayList< ArrayList<String> >> buildMap(){
+        //All Events
+        ArrayList<ArrayList<String>> allEvents  = new ArrayList<>();
+        ArrayList<String> names = server.getNames();
+        ArrayList<String> dates = server.getDates();
+        ArrayList<String> hours = server.getHours();
+        ArrayList<String> desps = server.getDesps();
+        allEvents.add(names);allEvents.add(dates);allEvents.add(hours);allEvents.add(desps);
+
+        //Attending
+        ArrayList<ArrayList<String>> attendingEvents  = new ArrayList<>();
+        names = server.getNamesSubset(new ArrayList<String>());
+        dates = server.getDatesSubset(new ArrayList<String>());
+        hours = server.getHoursSubset(new ArrayList<String>());
+        desps = server.getDespsSubset(new ArrayList<String>());
+        attendingEvents.add(names);attendingEvents.add(dates);attendingEvents.add(hours);attendingEvents.add(desps);
+
+        //Building Map
+        HashMap<String, ArrayList< ArrayList<String> >> map = new HashMap<>();
+        map.put("Attending",attendingEvents);
+        map.put("All Events",allEvents);
+        map.put("Your Events",allEvents);
+
+        return map;
+    }
+
+    public void setupTabs(HashMap<String, ArrayList< ArrayList<String> >> map){
+        viewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager(),map));
+        ActionBar actionBar = getSupportActionBar();
+
+        // Specify that tabs should be displayed in the action bar.
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        // Create a tab listener that is called when the user changes tabs.
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                // hide the given tab
+            }
+
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                // probably ignore this event
+            }
+        };
+        // Add 3 tabs, specifying the tab's text and TabListener
+        actionBar.addTab(
+                actionBar.newTab()
+                        .setText("Attending")
+                        .setTabListener(tabListener));
+        actionBar.addTab(
+                actionBar.newTab()
+                        .setText("All Events")
+                        .setTabListener(tabListener));
+        actionBar.addTab(
+                actionBar.newTab()
+                        .setText("Your Events")
+                        .setTabListener(tabListener));
+
     }
 
     public String requestKey(String name){
@@ -93,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String,ArrayList<ArrayList<String>>> map = new HashMap<>();
 
 
-        map.put("Attending",attending);
+        map.put("Attending",allEvents);
         map.put("All Events",allEvents);
         map.put("Your Events",allEvents);
 
@@ -131,19 +198,6 @@ public class MainActivity extends AppCompatActivity {
                         .setText("Your Events")
                         .setTabListener(tabListener));
 
-    }
-
-    public ArrayList<String> getNamesSubset(ArrayList<String> keys,ArrayList<String> names){
-        ArrayList<String> subset = new ArrayList<>();
-        System.out.println("Name size:"+names.size());
-        if(names.size()!=0) {
-            for (String s : keys) {
-                int index = server.keys.indexOf(s);
-                String dateToAdd = names.get(index);
-                subset.add(dateToAdd);
-            }
-        }
-        return subset;
     }
 
     class TabPagerAdapter extends FragmentStatePagerAdapter {

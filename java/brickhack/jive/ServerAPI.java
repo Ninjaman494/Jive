@@ -27,7 +27,7 @@ import java.util.Date;
  */
 
 public class ServerAPI {
-    Context mContext;
+    ServerListener mContext;
     ArrayList<JSONObject> events;
     static ArrayList<String> names = new ArrayList<>();
     static ArrayList<String> dates = new ArrayList<>();
@@ -36,20 +36,15 @@ public class ServerAPI {
     static ArrayList<double[]> coords = new ArrayList<>();
      ArrayList<String> keys = new ArrayList<>();
 
-    private final String eventUrl = "https://jive2.herokuapp.com/events";
-    private final String locUrl = "https://jive2.herokuapp.com/colleges/";
+    private final String eventUrl = "https://jive-backend.herokuapp.com/events";
+    private final String locUrl = "https://jive-backend.herokuapp.com/colleges/";
 
-    public ServerAPI(Context context){
-        mContext = context;
-        refreshEvents();
-    }
-
-    public ServerAPI(Context context,boolean b){
+    public ServerAPI(ServerListener context){
         mContext = context;
     }
 
     public void refreshEvents(){
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        RequestQueue queue = Volley.newRequestQueue((Context)mContext);
         JsonArrayRequest jsObjRequest = new JsonArrayRequest
                 (Request.Method.GET, eventUrl, null, new Response.Listener<JSONArray>() {
 
@@ -57,25 +52,21 @@ public class ServerAPI {
                     public void onResponse(JSONArray response) {
 
                         try {
-                            System.out.println("before refresh:"+names.size());
                             for(int i =0;i<response.length();i++){
                                 JSONObject obj = (JSONObject)response.get(i);
                                 //System.out.println("obj: "+events.get(i).toString());
                                 names.add(obj.get("name").toString());
-                                System.out.println("size for "+i+" iteration: "+names.size());
-                                dates.add(parseDate(obj.get("start_time").toString()));
-                                hours.add(parseHours(obj.get("start_time").toString(),obj.get("end_time").toString()));
+                                dates.add(parseDate(obj.get("start_date").toString()));
+                                hours.add(parseHours(obj.get("start_date").toString(),obj.get("end_date").toString()));
                                 desps.add(obj.get("description").toString());
                                 keys.add(obj.get("id").toString());
 
-                                System.out.println("coords: "+obj.get("gps_lat")+" , "+obj.get("gps_lon"));
                                 double d[] = new double[2];
-                                d[0] = (Double)obj.get("gps_lat");
-                                d[1] = (Double)obj.get("gps_lon");
+                                d[0] = (Double)obj.get("geo_lat");
+                                d[1] = (Double)obj.get("geo_lon");
                                 coords.add(d);
-
                             }
-                            System.out.println("after loop: "+names.size());
+                            mContext.onResult(true);
                         }
                         catch (Exception e){
                             e.printStackTrace();
@@ -85,7 +76,7 @@ public class ServerAPI {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println("Someone loathes you bitch");
+                        mContext.onResult(false);
                     }
                 });
         queue.add(jsObjRequest);
@@ -194,4 +185,8 @@ public class ServerAPI {
 
         return hours;
     }
+}
+
+interface ServerListener{
+    public void onResult(boolean success);
 }
