@@ -21,10 +21,12 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
     TabPagerAdapter adapter;
     Parser parser;
     ServerAPI server;
-    ArrayList<String> Skeys;
+    HashMap<String, ArrayList<ArrayList<String>>> dataMap;
+    boolean onRestart = false;
 
     //Constants
-    String ON_ORIENTATION_CHANGE = "on orientation change";
+    private static final String ON_ORIENTATION_CHANGE = "on orientation change";
+    private static final String DATA_MAP = "DATA_MAP";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,6 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
         setContentView(R.layout.activity_main);
         parser = new Parser(this);
         server = new ServerAPI(this);
-        server.refreshEvents();
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setOnPageChangeListener(
@@ -44,29 +45,35 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
                         getSupportActionBar().setSelectedNavigationItem(position);
                     }
                 });
-
         viewPager.setOffscreenPageLimit(5);
 
-
+        if(savedInstanceState==null) {
+            server.refreshEvents();
+        }else{
+            dataMap = (HashMap)savedInstanceState.getSerializable(DATA_MAP);
+            setupTabs(dataMap);
+            /*adapter.refreshData(dataMap);
+            adapter.notifyDataSetChanged();*/
+        }
     }
 
-    boolean onRestart = false;
-
     public void onResult(boolean success) {
+        dataMap = buildMap();
         if (onRestart) {
             System.out.println("onRestartResult");
-            adapter.refreshData(buildMap());
+            adapter.refreshData(dataMap);
             adapter.notifyDataSetChanged();
             onRestart = false;
         } else {
-            //createTabs(viewPager);
-            setupTabs(buildMap());
+            setupTabs(dataMap);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle saveState) {
+        System.out.println("onSaveInstanceState");
         saveState.putBoolean(ON_ORIENTATION_CHANGE, true);
+        saveState.putSerializable(DATA_MAP,dataMap);
     }
 
     @Override
@@ -84,24 +91,27 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
         ArrayList<String> dates = server.getDates();
         ArrayList<String> hours = server.getHours();
         ArrayList<String> desps = server.getDesps();
+        ArrayList<String> keys = server.getKeys();
         allEvents.add(names);
         allEvents.add(dates);
         allEvents.add(hours);
         allEvents.add(desps);
+        allEvents.add(keys);
 
         //Getting Keys
-        ArrayList<String> keys = parser.getKeys();
+        ArrayList<String> localKeys = parser.getKeys();
 
         //Attending
         ArrayList<ArrayList<String>> attendingEvents = new ArrayList<>();
-        names = server.getNamesSubset(keys);
-        dates = server.getDatesSubset(keys);
-        hours = server.getHoursSubset(keys);
-        desps = server.getDespsSubset(keys);
+        names = server.getNamesSubset(localKeys);
+        dates = server.getDatesSubset(localKeys);
+        hours = server.getHoursSubset(localKeys);
+        desps = server.getDespsSubset(localKeys);
         attendingEvents.add(names);
         attendingEvents.add(dates);
         attendingEvents.add(hours);
         attendingEvents.add(desps);
+        attendingEvents.add(localKeys);
 
         //Building Map
         HashMap<String, ArrayList<ArrayList<String>>> map = new HashMap<>();
@@ -111,7 +121,6 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
 
         return map;
     }
-
 
     public void setupTabs(HashMap<String, ArrayList<ArrayList<String>>> map) {
         adapter = new TabPagerAdapter(getSupportFragmentManager(), map);
@@ -174,7 +183,8 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
             ArrayList<String> dates = data.get(tabTitles[position]).get(1);
             ArrayList<String> hours = data.get(tabTitles[position]).get(2);
             ArrayList<String> desps = data.get(tabTitles[position]).get(3);
-            return AllEventsFragment.newInstance(names, dates, hours, desps);
+            ArrayList<String> keys = data.get(tabTitles[position]).get(4);
+            return AllEventsFragment.newInstance(names, dates, hours, desps,keys);
         }
 
         @Override
@@ -195,7 +205,7 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
 
         public void refreshData(HashMap<String, ArrayList<ArrayList<String>>> data) {
             this.data = data;
-            System.out.println(data.get("Attending").get(0).get(0));
+            //System.out.println(data.get("Attending").get(0).get(0));
         }
     }
 }

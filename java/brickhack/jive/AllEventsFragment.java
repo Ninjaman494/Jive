@@ -26,11 +26,13 @@ public class AllEventsFragment extends Fragment {
     private static final String ARG_PARAM2 = "DATES";
     private static final String ARG_PARAM3 = "HOURS";
     private static final String ARG_PARAM4 = "DESPS";
+    private static final String ARG_PARAM5 = "KEYS";
 
     private ArrayList<String> names;
     private ArrayList<String> dates;
     private ArrayList<String> hours;
     private ArrayList<String> desps;
+    private ArrayList<String> keys;
 
     public AllEventsFragment() {
         // Required empty public constructor
@@ -44,15 +46,14 @@ public class AllEventsFragment extends Fragment {
      * @param dates Parameter 2.
      * @return A new instance of fragment AllEventsFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static AllEventsFragment newInstance(ArrayList names,ArrayList dates,ArrayList hours,ArrayList desps) {
+    public static AllEventsFragment newInstance(ArrayList names,ArrayList dates,ArrayList hours,ArrayList desps,ArrayList keys) {
         AllEventsFragment fragment = new AllEventsFragment();
         Bundle args = new Bundle();
-        System.out.println("newInstance: "+names.size());
         args.putStringArrayList(ARG_PARAM1, names);
         args.putStringArrayList(ARG_PARAM2, dates);
         args.putStringArrayList(ARG_PARAM3, hours);
         args.putStringArrayList(ARG_PARAM4, desps);
+        args.putStringArrayList(ARG_PARAM5, keys);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,11 +61,13 @@ public class AllEventsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            names = getArguments().getStringArrayList(ARG_PARAM1);
-            dates = getArguments().getStringArrayList(ARG_PARAM2);
-            hours = getArguments().getStringArrayList(ARG_PARAM3);
-            desps = getArguments().getStringArrayList(ARG_PARAM4);
+        Bundle arguements = getArguments();
+        if (arguements != null) {
+            names = arguements.getStringArrayList(ARG_PARAM1);
+            dates = arguements.getStringArrayList(ARG_PARAM2);
+            hours = arguements.getStringArrayList(ARG_PARAM3);
+            desps = arguements.getStringArrayList(ARG_PARAM4);
+            keys = arguements.getStringArrayList(ARG_PARAM5);
         }
     }
 
@@ -85,14 +88,13 @@ public class AllEventsFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(),EventDetailsActivity.class);
                 intent.putExtra("name",names.get(i));
-                String key = ((HomePageActivity) getActivity()).requestKey(name.getText().toString());
-                intent.putExtra("key",key);
+                intent.putExtra("key",keys.get(i));
                 intent.putExtra("date",dates.get(i));
                 intent.putExtra("hour",hours.get(i));
                 intent.putExtra("desp",desps.get(i));
-
+/*
                 double[] coords = ((HomePageActivity) getActivity()).requestCoords(key);
-                intent.putExtra("coords",coords);
+                intent.putExtra("coords",coords);*/
                 startActivity(intent);
 
             }

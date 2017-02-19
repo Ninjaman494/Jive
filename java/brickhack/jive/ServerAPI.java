@@ -36,8 +36,8 @@ public class ServerAPI {
     static ArrayList<double[]> coords = new ArrayList<>();
      ArrayList<String> keys = new ArrayList<>();
 
-    private final String eventUrl = "https://jive-backend.herokuapp.com/events";
-    private final String locUrl = "https://jive-backend.herokuapp.com/colleges/";
+    private static final String eventUrl = "https://jive-backend.herokuapp.com/events";
+    private static final String locUrl = "https://jive-backend.herokuapp.com/colleges/";
 
     public ServerAPI(ServerListener context){
         mContext = context;
@@ -157,6 +157,10 @@ public class ServerAPI {
 
     public ArrayList<String> getDesps(){
         return desps;
+    }
+
+    public ArrayList<String> getKeys(){
+        return keys;
     }
 
     public String getKey(String name){
