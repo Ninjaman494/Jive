@@ -1,6 +1,5 @@
 package brickhack.jive;
 
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -9,9 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,26 +31,23 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
         parser = new Parser(this);
         server = new ServerAPI(this);
 
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager = (ViewPager)findViewById(R.id.viewPager);
         viewPager.setOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
                     @Override
                     public void onPageSelected(int position) {
-                        // When swiping between pages, select the
-                        // corresponding tab.
+                        // When swiping between pages, select the corresponding tab.
                         getSupportActionBar().setSelectedNavigationItem(position);
                     }
                 });
         viewPager.setOffscreenPageLimit(5);
 
-        if(savedInstanceState==null) {
-            server.refreshEvents();
-        }else{
-            dataMap = (HashMap)savedInstanceState.getSerializable(DATA_MAP);
-            setupTabs(dataMap);
-            /*adapter.refreshData(dataMap);
-            adapter.notifyDataSetChanged();*/
+        if(savedInstanceState == null) {
+            dataMap = (HashMap<String, ArrayList<ArrayList<String>>>) getIntent().getSerializableExtra(DATA_MAP);
+        }else {
+            dataMap = (HashMap) savedInstanceState.getSerializable(DATA_MAP);
         }
+        setupTabs(dataMap);
     }
 
     /** Called when server request has been completed */
@@ -198,7 +191,6 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
 
         public void refreshData(HashMap<String, ArrayList<ArrayList<String>>> data) {
             this.data = data;
-            //System.out.println(data.get("Attending").get(0).get(0));
         }
     }
 }

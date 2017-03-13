@@ -1,26 +1,16 @@
 package brickhack.jive;
 
 import android.content.Context;
-import android.util.Xml;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Created by akash on 2/11/2017.
@@ -41,22 +31,18 @@ public class Parser {
     private void createUserJSON(){
         try {
             FileWriter fw = new FileWriter(file);
-            //OutputStreamWriter out = new OutputStreamWriter(mContext.openFileOutput(fileName,0));
             JSONObject root = new JSONObject();
             JSONArray arr = new JSONArray();
-            root.put("events",(Object)arr);
+            root.put("events",arr);
             fw.write(root.toString());
             fw.flush();
             fw.close();
-            //out.write(root.toString());
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
     public JSONObject readUserJSON(){
-        //String JSONraw = readFromFile();
-
         try {
             FileInputStream is = new FileInputStream(file);
             int size = is.available();
@@ -79,12 +65,10 @@ public class Parser {
     public void writeJSON(JSONObject obj){
         try {
             FileWriter fw = new FileWriter(file);
-            //OutputStreamWriter out = new OutputStreamWriter(mContext.openFileOutput(fileName,0));
             System.out.println("What's being written: "+ obj.toString());
             fw.write(obj.toString());
             fw.flush();
             fw.close();
-            //out.write(root.toString());
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -97,7 +81,6 @@ public class Parser {
             eventToAdd.put("name", name);
             eventToAdd.put("key", key);
             ((JSONArray) old.get("events")).put(eventToAdd);
-            //old.put("event",eventToAdd);
             System.out.println("inAdd: "+old.toString());
             writeJSON(old);
 
@@ -117,7 +100,6 @@ public class Parser {
             eventToAdd.put("desp", desp);
             eventToAdd.put("key", key);
             ((JSONArray) old.get("events")).put(eventToAdd);
-            //old.put("event",eventToAdd);
             System.out.println("inAdd: "+old.toString());
             writeJSON(old);
 

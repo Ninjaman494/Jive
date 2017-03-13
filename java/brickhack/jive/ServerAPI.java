@@ -10,17 +10,11 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by akash on 2/11/2017.
@@ -51,14 +45,14 @@ public class ServerAPI {
         desps.clear();
         coords.clear();
         keys.clear();
-        //Sending request
+
+        //Sending request - on new Thread
         RequestQueue queue = Volley.newRequestQueue((Context)mContext);
         JsonArrayRequest jsObjRequest = new JsonArrayRequest
                 (Request.Method.GET, eventUrl, null, new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
-
                         try {
                             for(int i =0;i<response.length();i++){
                                 JSONObject obj = (JSONObject)response.get(i);
