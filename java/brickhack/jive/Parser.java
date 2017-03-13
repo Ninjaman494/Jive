@@ -51,10 +51,8 @@ public class Parser {
             is.read(buffer);
             is.close();
             String mResponse = new String(buffer);
-            System.out.println(mResponse);
 
             JSONObject jsonobj = new JSONObject(mResponse);
-            System.out.println("JSON: "+jsonobj.toString());
             return jsonobj;
         }catch (Exception e){
             e.printStackTrace();
@@ -66,7 +64,6 @@ public class Parser {
     public void writeJSON(JSONObject obj){
         try {
             FileWriter fw = new FileWriter(file);
-            System.out.println("What's being written: "+ obj.toString());
             fw.write(obj.toString());
             fw.flush();
             fw.close();
@@ -82,7 +79,6 @@ public class Parser {
             eventToAdd.put("name", name);
             eventToAdd.put("key", key);
             ((JSONArray) old.get("events")).put(eventToAdd);
-            System.out.println("inAdd: "+old.toString());
             writeJSON(old);
 
         }catch (Exception e){

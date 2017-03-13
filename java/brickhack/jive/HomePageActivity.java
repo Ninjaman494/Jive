@@ -18,7 +18,7 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
     Parser parser;
     ServerAPI server;
     HashMap<String, ArrayList<ArrayList<String>>> dataMap;
-    boolean onRestart = false;
+    boolean onResume = false;
 
     //Constants
     private static final String ON_ORIENTATION_CHANGE = "on orientation change";
@@ -53,11 +53,11 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
     /** Called when server request has been completed */
     public void onResult(boolean success) {
         dataMap = buildMap(server, parser);
-        if (onRestart) {
+        if (onResume) {
             System.out.println("onRestartResult");
             adapter.refreshData(dataMap);
             adapter.notifyDataSetChanged();
-            onRestart = false;
+            onResume = false;
         } else {
             setupTabs(dataMap);
         }
@@ -71,11 +71,11 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
     }
 
     @Override
-    public void onRestart() {
-        System.out.println("onRestart");
-        onRestart = true;
+    public void onResume(){
+        System.out.println("onResume");
+        onResume = true;
         server.refreshEvents();
-        super.onRestart();
+        super.onResume();
     }
 
     public static HashMap<String, ArrayList<ArrayList<String>>> buildMap(ServerAPI server, Parser parser) {
