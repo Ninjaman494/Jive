@@ -52,7 +52,7 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
 
     /** Called when server request has been completed */
     public void onResult(boolean success) {
-        dataMap = buildMap();
+        dataMap = buildMap(server, parser);
         if (onRestart) {
             System.out.println("onRestartResult");
             adapter.refreshData(dataMap);
@@ -78,7 +78,7 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
         super.onRestart();
     }
 
-    public HashMap<String, ArrayList<ArrayList<String>>> buildMap() {
+    public static HashMap<String, ArrayList<ArrayList<String>>> buildMap(ServerAPI server, Parser parser) {
         //All Events
         ArrayList<ArrayList<String>> allEvents = new ArrayList<>();
         ArrayList<String> names = server.getNames();

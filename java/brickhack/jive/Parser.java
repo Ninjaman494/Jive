@@ -20,6 +20,7 @@ public class Parser {
     Context mContext;
     private final String fileName = "USER_RECORDS";
     File file;
+
     public Parser(Context context){
         mContext = context;
         file = new File(context.getFilesDir(),fileName);
@@ -79,25 +80,6 @@ public class Parser {
         JSONObject eventToAdd = new JSONObject();
         try {
             eventToAdd.put("name", name);
-            eventToAdd.put("key", key);
-            ((JSONArray) old.get("events")).put(eventToAdd);
-            System.out.println("inAdd: "+old.toString());
-            writeJSON(old);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void addEvent(String name, String date, String hours,String desp, String key){
-        JSONObject old = readUserJSON();
-        JSONObject eventToAdd = new JSONObject();
-        if(isInFile(key)){return;}
-        try {
-            eventToAdd.put("name", name);
-            eventToAdd.put("date", date);
-            eventToAdd.put("hours", hours);
-            eventToAdd.put("desp", desp);
             eventToAdd.put("key", key);
             ((JSONArray) old.get("events")).put(eventToAdd);
             System.out.println("inAdd: "+old.toString());
