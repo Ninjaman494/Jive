@@ -57,6 +57,7 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
         }
     }
 
+    /** Called when server request has been completed */
     public void onResult(boolean success) {
         dataMap = buildMap();
         if (onRestart) {
@@ -158,14 +159,6 @@ public class HomePageActivity extends AppCompatActivity implements ServerListene
                         .setText("Your Events")
                         .setTabListener(tabListener));
 
-    }
-
-    public String requestKey(String name) {
-        return server.getKey(name);
-    }
-
-    public double[] requestCoords(String key) {
-        return server.getCoords(key);
     }
 
     class TabPagerAdapter extends FragmentStatePagerAdapter {
