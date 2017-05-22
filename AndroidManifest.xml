@@ -16,12 +16,14 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".HomePageActivity"/>
-        <activity android:name=".EventDetailsActivity" />
+        <activity android:name=".HomePageActivity" />
+        <activity android:name=".EventDetailsActivity_old"/>
+        <activity android:name=".EventDetailsActivity"
+            android:theme="@style/AppTheme.Fullscreen"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
