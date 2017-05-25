@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="brickhack.jive.DTLFragment">
+    tools:context="brickhack.jive.detail_page.DTLFragment">
 
     <ListView
         android:id="@+id/DTL_list"

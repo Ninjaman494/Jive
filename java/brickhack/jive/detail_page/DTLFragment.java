@@ -1,4 +1,4 @@
-package brickhack.jive;
+package brickhack.jive.detail_page;
 
 
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import brickhack.jive.R;
 
 
 /**

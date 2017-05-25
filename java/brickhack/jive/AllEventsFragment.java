@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import brickhack.jive.detail_page.EventDetailsActivity;
+
 
 /**
  * A simple {@link Fragment} subclass.

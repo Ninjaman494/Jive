@@ -1,15 +1,16 @@
-package brickhack.jive;
+package brickhack.jive.detail_page;
 
 import android.content.Intent;
-import android.location.Location;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import brickhack.jive.R;
+import ninjaman494.expandabletextview.ExpandableTextView;
 
 public class EventDetailsActivity extends AppCompatActivity{
     String name;
@@ -37,6 +38,21 @@ public class EventDetailsActivity extends AppCompatActivity{
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.add(R.id.infoLayout,dtlFragment);
         transaction.commit();
+
+        //Desp
+        ExpandableTextView etv = (ExpandableTextView)findViewById(R.id.etv);
+        TextView blurb = etv.getBlurbView();
+        TextView desp = etv.getDespView();
+
+        blurb.setText("RIT's premier hackathon");
+        blurb.setTextSize(16);
+        blurb.setTypeface(null, Typeface.BOLD);
+        blurb.setGravity(Gravity.CENTER);
+
+        desp.setText("BrickHack brings hackers together for 24 hours of design,development, and collaboration. Students create the impossible.");
+        desp.setTextSize(16);
+
+        etv.startExpanded(true);
     }
 }
 
