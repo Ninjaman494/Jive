@@ -29,30 +29,24 @@ public class EventDetailsActivity extends AppCompatActivity{
         date = intent.getStringExtra("date");
         hour = intent.getStringExtra("hour");
 
-        //Setting required details
         TextView nameView = (TextView) findViewById(R.id.name);
-        DTLFragment dtlFragment = DTLFragment.newInstance(date,hour,"Clark Gym");
-        FragmentManager fm = getSupportFragmentManager();
-
         nameView.setText(name);
+
+        //Creating fragment sections
+        FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
+
+        ///Date-Time-Location
+        DTLFragment dtlFragment = DTLFragment.newInstance(date,hour,"Clark Gym");
         transaction.add(R.id.infoLayout,dtlFragment);
+
+        ///Description
+        DescriptionFragment despFragment = DescriptionFragment.newInstance("RIT's premier hackathon",
+                "BrickHack brings hackers together for 24 hours of design,development, and collaboration. Students create the impossible.");
+        transaction.add(R.id.infoLayout,despFragment);
+
+        //Add fragments
         transaction.commit();
-
-        //Desp
-        ExpandableTextView etv = (ExpandableTextView)findViewById(R.id.etv);
-        TextView blurb = etv.getBlurbView();
-        TextView desp = etv.getDespView();
-
-        blurb.setText("RIT's premier hackathon");
-        blurb.setTextSize(16);
-        blurb.setTypeface(null, Typeface.BOLD);
-        blurb.setGravity(Gravity.CENTER);
-
-        desp.setText("BrickHack brings hackers together for 24 hours of design,development, and collaboration. Students create the impossible.");
-        desp.setTextSize(16);
-
-        etv.startExpanded(true);
     }
 }
 
